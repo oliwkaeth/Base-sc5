@@ -1,0 +1,26 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20;
+
+contract SimpleWallet {
+    address public owner;
+
+    constructor() {
+        owner = msg.sender;
+    }
+
+    // odbieranie ETH
+    receive() external payable {}
+
+    // sprawdzenie salda kontraktu
+    function getBalance() public view returns (uint256) {
+        return address(this).balance;
+    }
+
+    // wypłata ETH (tylko właściciel)
+    function withdraw(uint256 amount) public {
+        require(msg.sender == owner, "Nie jestes wlascicielem");
+        require(amount <= address(this).balance, "Brak srodkow");
+
+        payable(owner).transfer(amount);
+    }
+}
